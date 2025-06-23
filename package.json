@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node check-steps.cjs"
+    "test": "node Check_Steps.cjs"
   },
   "keywords": [],
   "author": "",
