@@ -31,6 +31,7 @@ if (retryIndex !== -1 && args[retryIndex + 1]) {
 }
 
 const dryRun = spawn('cucumber-js', [
+  '--dry-run',
   ...tagArgs,
   '--require', 'hooks.js',
   '--import', 'step_definitions/Steps.mjs'

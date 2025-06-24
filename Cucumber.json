@@ -1,0 +1,18 @@
+{
+    "default": {
+        "cucumberOptions": {
+            "format": [
+                "progress",
+                "json:./e2e/reports/cucumber-report.json",
+                "html:./e2e/reports/cucumber-report.html"
+            ],
+            "import": [
+                "./e2e/Tests/Step_definitions/**/*.js"
+            ],
+            "tags": "@smoke"
+        },
+        "features": "./e2e/Tests/Features/**/*.feature",
+        "parallel": 1,
+        "outputDir": "./e2e/Reports"
+    }
+}
