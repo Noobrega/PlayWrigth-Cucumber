@@ -34,7 +34,7 @@ const dryRun = spawn('cucumber-js', [
   '--dry-run',
   ...tagArgs,
   '--require', 'hooks.js',
-  '--import', 'step_definitions/Steps.mjs'
+  '--import', 'Tests/Step/Steps.js'
 ], { stdio: 'pipe', env })
 
 let output = ''
@@ -57,7 +57,7 @@ dryRun.on('close', (code) => {
       ...tagArgs,
       '--retry', retry,
       '--require', 'hooks.js',
-      '--import', 'step_definitions/Steps.mjs'
+      '--import', 'Tests/Step/Steps.js'
     ], { stdio: 'inherit', env })
 
     runTests.on('close', (testCode) => {

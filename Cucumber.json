@@ -7,7 +7,7 @@
                 "html:./e2e/reports/cucumber-report.html"
             ],
             "import": [
-                "./e2e/Tests/Step_definitions/**/*.js"
+                "./e2e/Tests/Step/**/*.js"
             ],
             "tags": "@smoke"
         },

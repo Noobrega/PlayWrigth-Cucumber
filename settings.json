@@ -5,7 +5,7 @@
     "code-runner.runInTerminal": true,
     "tabnine.experimentalAutoImports": true,
     "window.meuBarVisibility": "compact",
-    "cucumberautocomplete.steps": "./e2e/Tests/Step_definitions/**/*.js",
+    "cucumberautocomplete.steps": "./e2e/Tests/Steps/**/*.js",
     "cucumberautocomplete.syncfeatures": "./e2e/Tests/Features/**/*.feature",
     "cucumberautocomplete.syncDefinitions": true,
     "cucumberautocomplete.strictGherkinCompletion": true,
