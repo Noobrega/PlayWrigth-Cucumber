@@ -1,6 +1,6 @@
 import { Before, After, AfterAll, setDefaultTimeout, BeforeAll } from "@cucumber/cucumber"
 import { chromium } from 'playwright'
-import { paths } from "./e2e/Common/jcc/paths.js"
+import { paths } from "./e2e/Common/paths.js"
 import * as fs from 'fs'
 import path from "path"
 

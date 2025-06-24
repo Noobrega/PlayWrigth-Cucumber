@@ -33,7 +33,7 @@ if (retryIndex !== -1 && args[retryIndex + 1]) {
 const dryRun = spawn('cucumber-js', [
   '--dry-run',
   ...tagArgs,
-  '--require', 'hooks.js',
+  '--import', 'hooks.js',
   '--import', 'Tests/Step/Steps.js'
 ], { stdio: 'pipe', env })
 
@@ -56,7 +56,7 @@ dryRun.on('close', (code) => {
     const runTests = spawn('cucumber-js', [
       ...tagArgs,
       '--retry', retry,
-      '--require', 'hooks.js',
+      '--import', 'hooks.js',
       '--import', 'Tests/Step/Steps.js'
     ], { stdio: 'inherit', env })
 
