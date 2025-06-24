@@ -11,5 +11,5 @@
     "cucumberautocomplete.strictGherkinCompletion": true,
     "cucumberautocomplete.smartSnippets": true,
     "cucumberautocomplete.gherkinDefinitionPart": "Given|When|Then|And|But",
-    "cucumberautocomplete.gherkinDefinitionPartRegex": "^(Given|When|Then|And|But)\\s+",
+    "cucumberautocomplete.gherkinDefinitionPartRegex": "^(Given|When|Then|And|But)\\s+"
 }
