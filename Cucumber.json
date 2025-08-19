@@ -1,18 +1,15 @@
 {
     "default": {
-        "cucumberOptions": {
-            "format": [
-                "progress",
-                "json:./e2e/reports/cucumber-report.json",
-                "html:./e2e/reports/cucumber-report.html"
-            ],
-            "import": [
-                "./e2e/Tests/Step/**/*.js"
-            ],
-            "tags": "@smoke"
-        },
-        "features": "./e2e/Tests/Features/**/*.feature",
-        "parallel": 1,
-        "outputDir": "./e2e/Reports"
+        "import": [ 
+            "./e2e/tests/steps/*.mjs" 
+        ],
+        "format":[
+            "progress",
+            "html:./e2e/reports/cucumber_reports.html"
+            
+        ],
+        "paths": [
+            "./e2e/tests/features/*.feature"
+        ]
     }
 }

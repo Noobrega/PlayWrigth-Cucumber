@@ -5,15 +5,21 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node Check_Steps.cjs"
+    "test:Dev": "ENV=Dev node check-steps.cjs",
+    "test:QA": "ENV=QA node check-steps.cjs",
+    "test:UAT": "ENV=UAT node check-steps.cjs",
+    "test:Prod": "ENV=Prod node check-steps.cjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@cucumber/cucumber": "^11.3.0",
+    "@cucumber/cucumber": "^11.1.0",
     "@playwright/test": "^1.47.2",
     "@types/node": "^22.6.1",
     "cucumber-html-reporter": "^6.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
   }
 }
