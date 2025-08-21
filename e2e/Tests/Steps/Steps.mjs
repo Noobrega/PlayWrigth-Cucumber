@@ -1,16 +1,6 @@
 import { Given, When, Then } from "@cucumber/cucumber"
-import { LoginPage } from "../page-objects/LoginPage.js"
-import { Headers } from "../page-objects/Header.js"
-import { Account } from "../page-objects/AccountPage.js"
-import { AllAccounts } from "../page-objects/AllAccountsPage.js"
-import { NewAccounts } from "../page-objects/NewAccountPage.js"
-import { NewContact } from "../page-objects/NewContactPage.js"
-import { ParentOpportunity } from "../page-objects/ParentOpportunityPage.js"
-import { LoginAccount } from "../page-objects/LoginAccount.js"
-import { WCT } from "../page-objects/WTCPage.js"
 import { Comands } from "../../Common/Comands.js"
 import assert from "assert"
-import assert from "node:assert";
 import { log } from "console"
 
 let SFPage
@@ -25,375 +15,579 @@ let URL = ""
 let Worker = `${process.env.CUCUMBER_WORKER_ID}`
 
 
-Given, When, Then('Log in as a {string}', async function (Person) {
-    SFPage = new LoginAccount(this.page)
-    await SFPage.LogInAs(Person)
-    console.log(`Worker ID ${Worker}:  Log in as ${Person}`)
-})
-
-Given, When, Then('Back to System Admin', async function () {
-    SFPage = new LoginAccount(this.page)
-    await SFPage.BackToSystemAdmin()
-    console.log(`Worker ID ${Worker}:  Back to System Admin`)
-})
-
-Given('I\'m on the login page', async function () {
+// Step para login válido
+Given('I am on the OrangeHRM login page', async function () {
     SFPage = new LoginPage(this.page)
-    await SFPage.visit()
-    await SFPage.NormalLogin()
-    console.log(`Worker ID ${Worker}:  I\'m on the login page`)
+    await SFPage.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
+    console.log(`Worker ${Worker}: Navigated to OrangeHRM login page`)
 })
 
-Given('Validate if need token', async function () {
-    let RandomNames = await SFPage.getNameRun()
-    NameRun = `Automation ${RandomNames} Run`
-    LNameRun = `${RandomNames} Last Name`
-    EmailRun = await SFPage.getEmail(RandomNames)
-    ULID = await SFPage.getULID()
-    CID = await SFPage.getCompanyID()
-    this.DataName = NameRun
-    this.DataEmail = EmailRun
-    this.CanodicalULID = ULID
-    this.CompID = CID
-    SFPage = new LoginAccount(this.page)
-    //Only uncomment the line below if you need put the Verification Code
-    //await SFPage.Comands.Wait(this.page,20000)
-    await SFPage.ValidateToken()
-    console.log(`Worker ID ${Worker}:  Validate if need token`)
-})
-
-Given('Select {string} app on App Launcher', async function (Option) {
-    SFPage = new Headers(this.page)
-    await SFPage.SelectAppLauncher(Option)
-    console.log(`Worker ID ${Worker}:  Select ${Option} app on App Launcher`)
-})
-
-Given('Login with a {string} account', async function (Profile) {
+When('I log in with username {string} and password {string}', async function (username, password) {
     SFPage = new LoginPage(this.page)
-    let RandomNames = await SFPage.getNameRun()
-    NameRun = `Automation ${RandomNames} Run`
-    LNameRun = `${RandomNames} Last Name`
-    EmailRun = await SFPage.getEmail(RandomNames)
-    ULID = await SFPage.getULID()
-    CID = await SFPage.getCompanyID()
-    this.DataName = NameRun
-    this.DataEmail = EmailRun
-    this.CanodicalULID = ULID
-    this.CompID = CID
-    SFPage = new LoginAccount(this.page)
-    //Only uncomment the line below if you need put the Verification Code
-    await SFPage.Comands.Wait(this.page, 20000)
-    await SFPage.OppPage()
-    console.log(`Worker ID ${Worker}:  Login with a ${Profile} account`)
+    await SFPage.login(username, password)
+    console.log(`Worker ${Worker}: Logged in with username: ${username}`)
 })
 
-When('Go to top menu', async function () {
-    //SFPage = new Headers(this.page)
-    //await SFPage.Tab()
-    console.log(`Worker ID ${Worker}:  Go to top menu`)
+Then('I should see the dashboard', async function () {
+    SFPage = new DashboardPage(this.page)
+    const isVisible = await SFPage.isDashboardVisible()
+    expect(isVisible).toBe(true)
+    console.log(`Worker ${Worker}: Dashboard is visible`)
 })
 
-When('Select {string} on top menu', async function (Option) {
-    SFPage = new Headers(this.page)
-    await SFPage.SelectMenu(Option)
-    console.log(`Worker ID ${Worker}:  Select ${Option} on top menu`)
+Then('I should see my profile menu', async function () {
+    SFPage = new DashboardPage(this.page)
+    const isVisible = await SFPage.isProfileMenuVisible()
+    expect(isVisible).toBe(true)
+    console.log(`Worker ${Worker}: Profile menu is visible`)
 })
 
-When('Click on {string} button on {string} page', async function (button, SelectedPage) {
-    switch (SelectedPage) {
-        case 'Account':
-            SFPage = new Account(this.page)
-            await SFPage.ClickButton(button)
-            break
-        case 'Accounts':
-            SFPage = new AllAccounts(this.page)
-            await SFPage.ClickButton(button)
-            break
-        case 'New Account':
-            SFPage = new NewAccounts(this.page)
-            await SFPage.ClickButton(button)
-            break
-        case 'New Contacts':
-            SFPage = new NewContact(this.page)
-            await SFPage.ClickButton(button)
-            break
-        case 'Opportunity':
-            SFPage = new ParentOpportunity(this.page, this.page.url())
-            await SFPage.ClickButton(button)
-            await SFPage.visitWaiting()
-            break
-    }
-    console.log(`Worker ID ${Worker}:  Click on ${button} button on ${SelectedPage} page`)
+// Step para login inválido
+Then('I should see the login error message {string}', async function (errorMessage) {
+    SFPage = new LoginPage(this.page)
+    const error = await SFPage.getLoginErrorMessage()
+    expect(error).toBe(errorMessage)
+    console.log(`Worker ${Worker}: Login error message displayed: ${errorMessage}`)
 })
 
-When('Add New Account', async function () {
-    SFPage = new NewAccounts(this.page)
-    await SFPage.AddNewAccount(NameRun, ULID, CID)
-    console.log(`Worker ID ${Worker}:  Add New Account`)
+Then('I should remain on the login page', async function () {
+    const currentUrl = await this.page.url()
+    expect(currentUrl).toContain('/auth/login')
+    console.log(`Worker ${Worker}: Remained on the login page`)
 })
 
-When('Add New Contact', async function () {
-    SFPage = new Account(this.page)
-    AccountProfile = this.page.url()
-    this.AccountURL = AccountProfile
-    await SFPage.NewContact()
-    SFPage = new NewContact(this.page, AccountProfile)
-    await SFPage.AddNewContact(FNameRun, LNameRun, EmailRun)
-    console.log(`Worker ID ${Worker}:  Add New Contact`)
+// Step para recuperação de senha
+When('I click {string}', async function (elementText) {
+    SFPage = new LoginPage(this.page)
+    await SFPage.clickElementByText(elementText)
+    console.log(`Worker ${Worker}: Clicked on element: ${elementText}`)
 })
 
-When('Select the {string} Tab', async function (Tab) {
-    SFPage = new Headers(this.page, AccountProfile)
-    switch (Tab) {
-        case 'Account':
-            console.log(AccountProfile)
-            SFPage.visit()
-            break
-    }
-    console.log(`Worker ID ${Worker}:  Select the ${Tab} Tab`)
+Then('I should see the password reset page', async function () {
+    const currentUrl = await this.page.url()
+    expect(currentUrl).toContain('/auth/requestPasswordResetCode')
+    console.log(`Worker ${Worker}: Password reset page is visible`)
 })
 
-When('Select the {string} Tab on Opportunity page', async function (Tab) {
-    SFPage = new ParentOpportunity(this.page)
-    await SFPage.ClickTab(Tab)
-    console.log(`Worker ID ${Worker}:  Select the ${Tab} Tab on Opportunity Page`)
+When('I request a password reset for username {string}', async function (username) {
+    SFPage = new PasswordResetPage(this.page)
+    await SFPage.requestPasswordReset(username)
+    console.log(`Worker ${Worker}: Requested password reset for username: ${username}`)
 })
 
-When('Select {string} subtab on Account page', async function (Subtab) {
-    SFPage = new Account(this.page)
-    switch (Subtab) {
-        case 'Contacts':
-            await SFPage.tabContacts()
-            break
-        case 'Qualification':
-            await SFPage.tabQualification()
-            break
-    }
-    console.log(`Worker ID ${Worker}:  Select ${Subtab} subtab on Account page`)
+Then('I should see a confirmation message {string}', async function (confirmationMessage) {
+    const message = await SFPage.getConfirmationMessage()
+    expect(message).toBe(confirmationMessage)
+    console.log(`Worker ${Worker}: Confirmation message displayed: ${confirmationMessage}`)
 })
 
-When('Click on {string} button on Standart subtab', async function (Button) {
-    SFPage = new Account(this.page)
-    await SFPage.ClickButton(Button)
-    //page.elements.click(page.locators[Button])
-    console.log(`Worker ID ${Worker}:  Click on ${Button} button on Standart subtab`)
+// Step para navegação básica
+When('I navigate to the {string} section', async function (section) {
+    SFPage = new NavigationPage(this.page)
+    await SFPage.navigateToSection(section)
+    console.log(`Worker ${Worker}: Navigated to section: ${section}`)
 })
 
-When('Select {string} as Core Product', async function (Product) {
-    SFPage = new Account(this.page)
-    await SFPage.SelectCoreProduct(Product)
-    console.log(`Worker ID ${Worker}:  Select ${Product} as Core Product`)
+Then('I should see the {string} header', async function (headerText) {
+    const header = await SFPage.getHeaderText()
+    expect(header).toBe(headerText)
+    console.log(`Worker ${Worker}: Header displayed: ${headerText}`)
 })
 
-When('Fill Scrubbing', async function () {
-    SFPage = new Account(this.page)
-    await SFPage.FillScrubbing()
-    console.log(`Worker ID ${Worker}:  Fill Scrubbing`)
+// Step para logout
+When('I open the user menu', async function () {
+    SFPage = new DashboardPage(this.page)
+    await SFPage.openUserMenu()
+    console.log(`Worker ${Worker}: User menu opened`)
 })
 
-When('Fill {string} {string} {string} {string} {string} {string} Scrubbing', async function (website, bstreet, bcity, bstate, bzip, bcountry) {
-    SFPage = new Account(this.page)
-    await SFPage.FillScrubbing(website, bstreet, bcity, bstate, bzip, bcountry)
-    console.log(`Worker ID ${Worker}:  Fill 2.0 Scrubbing`)
+When('I click {string} on Dashboard Page', async function (elementText) {
+    SFPage = new DashboardPage(this.page)
+    await SFPage.clickElementByText(elementText)
+    console.log(`Worker ${Worker}: Clicked on element: ${elementText}`)
 })
 
-When('Fill Qualifying', async function () {
-    SFPage = new Account(this.page)
-    await SFPage.FillQualifying(`${FNameRun} ${LNameRun}`)
-    console.log(`Worker ID ${Worker}:  Fill Qualifying`)
+Then('I should return to the login page', async function () {
+    const currentUrl = await this.page.url()
+    expect(currentUrl).toContain('/auth/login')
+    console.log(`Worker ${Worker}: Returned to the login page`)
 })
 
-When('Fill {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} Qualifying', async function (PrimaryBusinessOption, problem, priority, wantsmedical, eorprovider, currentpayroll, hi, month, risk, vertx, anyone, stateop, intcountry, intemp, intcont) {
-    SFPage = new Account(this.page)
-    await SFPage.FillQualifying(`${FNameRun} ${LNameRun}`, PrimaryBusinessOption, problem, priority, wantsmedical, eorprovider, currentpayroll, hi, month, risk, vertx, anyone, stateop, intcountry, intemp, intcont)
-    console.log(`Worker ID ${Worker}:  Fill Qualifyingx`)
+// Step para criar usuário no módulo Admin
+When('I open {string} and click {string}', async function (section, buttonText) {
+    SFPage = new AdminPage(this.page)
+    await SFPage.openSectionAndClickButton(section, buttonText)
+    console.log(`Worker ${Worker}: Opened section: ${section} and clicked button: ${buttonText}`)
 })
 
-When('Fill and Complete Sales Qualified', async function () {
-    SFPage = new Account(this.page)
-    await SFPage.FillSales()
-    await SFPage.FillCallOutcome()
-    console.log(`Worker ID ${Worker}:  Fill and Complete Sales Qualified`)
+When('I fill the system user form:', async function (dataTable) {
+    const formData = dataTable.rowsHash()
+    SFPage = new AdminPage(this.page)
+    await SFPage.fillSystemUserForm(formData)
+    console.log(`Worker ${Worker}: Filled system user form`)
 })
 
-When('Fill and Complete {string} {string} {string} Sales Qualified', async function (ft, pt, nextstep) {
-    SFPage = new Account(this.page)
-    await SFPage.FillSales()
-    await SFPage.FillCallOutcome(ft, pt, nextstep)
-    console.log(`Worker ID ${Worker}:  Fill and Complete Sales Qualifiedx`)
+When('I save the system user', async function () {
+    await SFPage.saveSystemUser()
+    console.log(`Worker ${Worker}: System user saved`)
 })
 
-When('Fill Negotiate Details on Opportunity page and Save', async function () {
-    SFPage = new ParentOpportunity(this.page)
-    await SFPage.FillNegotiateDetails()
-    console.log('Fill Negotiate Details')
+Then('I should see a success toast {string}', async function (toastMessage) {
+    const message = await SFPage.getSuccessToastMessage()
+    expect(message).toBe(toastMessage)
+    console.log(`Worker ${Worker}: Success toast displayed: ${toastMessage}`)
 })
 
-When('Visit {string} Opportunity', async function (URL_Opp) {
-    SFPage = new LoginAccount(this.page, URL_Opp)
-    URL = URL_Opp
-    await SFPage.visit()
-    console.log(`Worker ID ${Worker}:  Visit ${URL_Opp} Opportunity`)
+Then('I should find the user {string} in the users list', async function (username) {
+    const userExists = await SFPage.isUserInList(username)
+    expect(userExists).toBe(true)
+    console.log(`Worker ${Worker}: User found in list: ${username}`)
 })
 
-When('Add HIQ Underwriting', async function () {
-    console.log(`Worker ID ${Worker}:  Add HIQ Underwriting`)
+// Step para adicionar funcionário
+When('I click {string}', async function (buttonText) {
+    SFPage = new PIMPage(this.page)
+    await SFPage.clickButton(buttonText)
+    console.log(`Worker ${Worker}: Clicked button: ${buttonText}`)
 })
 
-When('Add WCT Underwriting', async function () {
-    SFPage = new ParentOpportunity(this.page)
-    await SFPage.AddFillWCT()
-    console.log(`Worker ID ${Worker}:  Add WCT Underwriting`)
+When('I fill the employee form with:', async function (dataTable) {
+    const formData = dataTable.rowsHash()
+    SFPage = new PIMPage(this.page)
+    await SFPage.fillEmployeeForm(formData)
+    console.log(`Worker ${Worker}: Filled employee form`)
 })
 
-When('Add MICO Underwriting', async function () {
-    console.log(`Worker ID ${Worker}:  Add MICO Underwriting`)
+When('I save the employee', async function () {
+    await SFPage.saveEmployee()
+    console.log(`Worker ${Worker}: Employee saved`)
 })
 
-When('Add CRIMSON SAGE Underwriting', async function () {
-    console.log(`Worker ID ${Worker}:  Add CRIMSON SAGE Underwriting`)
+Then('I should see the Personal Details page', async function () {
+    const currentUrl = await this.page.url()
+    expect(currentUrl).toContain('/pim/viewPersonalDetails')
+    console.log(`Worker ${Worker}: Personal Details page is visible`)
 })
 
-When('Click on {string} link on Opportunity page', async function (link) {
-    SFPage = new ParentOpportunity(this.page)
-    await SFPage.ClickLink(link)
-    console.log(`Worker ID ${Worker}:  Click on ${link} link on Opportunity page`)
+Then('The employee full name should be {string}', async function (fullName) {
+    const displayedName = await SFPage.getEmployeeFullName()
+    expect(displayedName).toBe(fullName)
+    console.log(`Worker ${Worker}: Employee full name displayed: ${fullName}`)
 })
 
-When('Click on {string} on All Accounts page', async function (element) {
-    SFPage = new AllAccounts(this.page)
-    await SFPage.Elements.click(this.page, SFPage.locators[element])
-    console.log(`Worker ID ${Worker}:  Click on ${element} on All Accounts page`)
+// Step para buscar funcionário
+When('I search employees by name {string}', async function (name) {
+    SFPage = new PIMPage(this.page)
+    await SFPage.searchEmployeeByName(name)
+    console.log(`Worker ${Worker}: Searched employees by name: ${name}`)
 })
 
-When('Click on {string} subtab on Account page', async function (element) {
-    SFPage = new Account(this.page)
-    await SFPage.Elements.click(this.page, SFPage.locators[element])
-    console.log(`Worker ID ${Worker}:  Click on ${element} subtab on Account page`)
+Then('I should see at least one result containing {string}', async function (name) {
+    const results = await SFPage.getSearchResults()
+    expect(results.some(result => result.includes(name))).toBe(true)
+    console.log(`Worker ${Worker}: Search results contain name: ${name}`)
 })
 
-When('Click on {string} Tab', async function (Tab) {
-    SFPage = new Headers(this.page, AccountProfile)
-    switch (Tab) {
-        case 'Account':
-            console.log(AccountProfile)
-            SFPage.visit()
-            break
-    }
-    console.log(`Worker ID ${Worker}:  Click on ${Tab} Tab`)
+When('I can open the first result to view details', async function () {
+    await SFPage.openFirstSearchResult()
+    console.log(`Worker ${Worker}: Opened first search result`)
 })
 
-When('Fill the Required Details', async function () {
-    SFPage = new Account(this.page)
-    await SFPage.FillRequiredDetails(`${FNameRun} ${LNameRun}`)
-    console.log(`Worker ID ${Worker}:  Fill the Required Details`)
+// Step para editar dados pessoais
+Given('I open employee {string} from search results', async function (name) {
+    SFPage = new PIMPage(this.page)
+    await SFPage.openEmployeeFromSearchResults(name)
+    console.log(`Worker ${Worker}: Opened employee: ${name}`)
 })
 
-When('Fill the Required Details for a Partner Referral', async function () {
-    SFPage = new Account(this.page)
-    await SFPage.FillRequiredDetailsPR()
-    console.log(`Worker ID ${Worker}:  Fill the Required Details for a Partner Referral`)
+When('I edit personal details with:', async function (dataTable) {
+    const details = dataTable.rowsHash()
+    SFPage = new PIMPage(this.page)
+    await SFPage.editPersonalDetails(details)
+    console.log(`Worker ${Worker}: Edited personal details`)
 })
 
-When('Fill the Discovery Call', async function () {
-    SFPage = new Account(this.page)
-    await SFPage.FillDiscoveryCall()
-    console.log(`Worker ID ${Worker}:  Fill the Discovery Call`)
+When('I save personal details', async function () {
+    await SFPage.savePersonalDetails()
+    console.log(`Worker ${Worker}: Personal details saved`)
 })
 
-When('Click on {string} on the pop-up on Account page', async function (element) {
-    SFPage = new Account(this.page)
-    await SFPage.Elements.click(this.page, SFPage.locators[`Pop-up ${element}`])
-    console.log(`Worker ID ${Worker}:  Click on ${element} on the pop-up on Account page`)
+Then('The personal details should reflect:', async function (dataTable) {
+    const expectedDetails = dataTable.rowsHash()
+    const actualDetails = await SFPage.getPersonalDetails()
+    expect(actualDetails).toEqual(expectedDetails)
+    console.log(`Worker ${Worker}: Personal details updated correctly`)
 })
 
-When('Click on {string} on Account page', async function (element) {
-    SFPage = new Account(this.page)
-    await SFPage.Elements.click(this.page, SFPage.locators[element])
-    console.log(`Worker ID ${Worker}:  Click on ${element} on Account page`)
-})
+// Given, When, Then('Log in as a {string}', async function (Person) {
+//     SFPage = new LoginAccount(this.page)
+//     await SFPage.LogInAs(Person)
+//     console.log(`Worker ${Worker}: Log in as ${Person}`)
+// })
 
-When('Select the Partner Referral on Account page', async function () {
-    SFPage = new Account(this.page)
-    await SFPage.SelectPartnerReferral()
-    console.log(`Worker ID ${Worker}:  Select the Partner Referral on Account page`)
-})
+// Given, When, Then('Back to System Admin', async function () {
+//     SFPage = new LoginAccount(this.page)
+//     await SFPage.BackToSystemAdmin()
+//     console.log(`Worker ${Worker}: Back to System Admin`)
+// })
 
-When('Click on {string} on Parent Opportunity page', async function (element) {
-    SFPage = new ParentOpportunity(this.page)
-    await SFPage.Elements.click(this.page, SFPage.locators[element])
-    console.log(`Worker ID ${Worker}:  Click on ${element} on Parent Opportunity page`)
-})
+// Given('I\'m on the login page', async function () {
+//     SFPage = new LoginPage(this.page)
+//     await SFPage.visit()
+//     await SFPage.NormalLogin()
+//     console.log(`Worker ${Worker}: I\'m on the login page`)
+// })
 
-When('Fill Product {string} on Parent Opportunity page', async function (element) {
-    SFPage = new ParentOpportunity(this.page)
-    await SFPage.SelectProduct(element)
-    console.log(`Worker ID ${Worker}:  Click on ${element} on Parent Opportunity page`)
-})
+// Given('Validate if need token', async function () {
+//     let RandomNames = await SFPage.getNameRun()
+//     NameRun = `Automation ${RandomNames} Run`
+//     LNameRun = `${RandomNames} Last Name`
+//     EmailRun = await SFPage.getEmail(RandomNames)
+//     ULID = await SFPage.getULID()
+//     CID = await SFPage.getCompanyID()
+//     this.DataName = NameRun
+//     this.DataEmail = EmailRun
+//     this.CanodicalULID = ULID
+//     this.CompID = CID
+//     SFPage = new LoginAccount(this.page)
+//     //Only uncomment the line below if you need put the Verification Code
+//     //await SFPage.Comands.Wait(this.page,20000)
+//     await SFPage.ValidateToken()
+//     console.log(`Worker ${Worker}: Validate if need token`)
+// })
 
-When('Fill Product PEO {string} on Parent Opportunity page', async function (BorP) {
-    SFPage = new ParentOpportunity(this.page)
-    await SFPage.PEO(BorP)
-    console.log(`Worker ID ${Worker}:  Click on ${BorP} on Parent Opportunity page`)
-})
+// Given('Select {string} app on App Launcher', async function (Option) {
+//     SFPage = new Headers(this.page)
+//     await SFPage.SelectAppLauncher(Option)
+//     console.log(`Worker ${Worker}: Select ${Option} app on App Launcher`)
+// })
 
-When('Validate the Child Opportunity it\'s in {string}', async function (Phase) {
-    SFPage = new ParentOpportunity(this.page)
-    assert.ok(await SFPage.ValidatePhase(Phase), `Opportunity it's not in the ${Phase} phase`)
-    console.log(`Worker ID ${Worker}:  Validate the Opportunity it\'s in ${Phase}`)
-})
+// Given('Login with a {string} account', async function (Profile) {
+//     SFPage = new LoginPage(this.page)
+//     let RandomNames = await SFPage.getNameRun()
+//     NameRun = `Automation ${RandomNames} Run`
+//     LNameRun = `${RandomNames} Last Name`
+//     EmailRun = await SFPage.getEmail(RandomNames)
+//     ULID = await SFPage.getULID()
+//     CID = await SFPage.getCompanyID()
+//     this.DataName = NameRun
+//     this.DataEmail = EmailRun
+//     this.CanodicalULID = ULID
+//     this.CompID = CID
+//     SFPage = new LoginAccount(this.page)
+//     //Only uncomment the line below if you need put the Verification Code
+//     await SFPage.Comands.Wait(this.page, 20000)
+//     await SFPage.OppPage()
+//     console.log(`Worker ${Worker}: Login with a ${Profile} account`)
+// })
 
-When('Click on {string} of {string} on Parent Opportunity page', async function (string, string2) {
-    // Write code here that turns the phrase above into concrete actions
-    return 'pending';
-});
+// When('Go to top menu', async function () {
+//     //SFPage = new Headers(this.page)
+//     //await SFPage.Tab()
+//     console.log(`Worker ${Worker}: Go to top menu`)
+// })
 
-When('Click on {string} on pop-up Parent Opportunity page', async function (string) {
-    // Write code here that turns the phrase above into concrete actions
-    return 'pending';
-});
+// When('Select {string} on top menu', async function (Option) {
+//     SFPage = new Headers(this.page)
+//     await SFPage.SelectMenu(Option)
+//     console.log(`Worker ${Worker}: Select ${Option} on top menu`)
+// })
 
-When('Fill Discount {string} and {string} on Parent Opportunity page', async function (string, string2) {
-    // Write code here that turns the phrase above into concrete actions
-    return 'pending';
-});
+// When('Click on {string} button on {string} page', async function (button, SelectedPage) {
+//     switch (SelectedPage) {
+//         case 'Account':
+//             SFPage = new Account(this.page)
+//             await SFPage.ClickButton(button)
+//             break
+//         case 'Accounts':
+//             SFPage = new AllAccounts(this.page)
+//             await SFPage.ClickButton(button)
+//             break
+//         case 'New Account':
+//             SFPage = new NewAccounts(this.page)
+//             await SFPage.ClickButton(button)
+//             break
+//         case 'New Contacts':
+//             SFPage = new NewContact(this.page)
+//             await SFPage.ClickButton(button)
+//             break
+//         case 'Opportunity':
+//             SFPage = new ParentOpportunity(this.page, this.page.url())
+//             await SFPage.ClickButton(button)
+//             await SFPage.visitWaiting()
+//             break
+//     }
+//     console.log(`Worker ${Worker}: Click on ${button} button on ${SelectedPage} page`)
+// })
 
-Then('Validate the Discount {string} is displayed on Parent Opportunity page', async function (string) {
-    // Write code here that turns the phrase above into concrete actions
-    return 'pending';
-});
+// When('Add New Account', async function () {
+//     SFPage = new NewAccounts(this.page)
+//     await SFPage.AddNewAccount(NameRun, ULID, CID)
+//     console.log(`Worker ${Worker}: Add New Account`)
+// })
 
-Then('Validate the Discount {string} is removed on Parent Opportunity page', async function (string) {
-    // Write code here that turns the phrase above into concrete actions
-    return 'pending';
-});
+// When('Add New Contact', async function () {
+//     SFPage = new Account(this.page)
+//     AccountProfile = this.page.url()
+//     this.AccountURL = AccountProfile
+//     await SFPage.NewContact()
+//     SFPage = new NewContact(this.page, AccountProfile)
+//     await SFPage.AddNewContact(FNameRun, LNameRun, EmailRun)
+//     console.log(`Worker ${Worker}: Add New Contact`)
+// })
 
-Then('Validate the Parent Opportunity it\'s in {string}', async function (Phase) {
-    SFPage = new ParentOpportunity(this.page)
-    assert.ok(await SFPage.ValidateParentPhase(Phase), `Opportunity it's not in the ${Phase} phase`)
-    console.log(`Worker ID ${Worker}:  Validate the Opportunity it\'s in ${Phase}`)
-})
+// When('Select the {string} Tab', async function (Tab) {
+//     SFPage = new Headers(this.page, AccountProfile)
+//     switch (Tab) {
+//         case 'Account':
+//             console.log(AccountProfile)
+//             SFPage.visit()
+//             break
+//     }
+//     console.log(`Worker ${Worker}: Select the ${Tab} Tab`)
+// })
 
-Then('Validate the HIQ Underwriting it\'s in {string}', async function (Phase) {
-    console.log(`Worker ID ${Worker}:  Validate the HIQ Underwriting`)
-})
+// When('Select the {string} Tab on Opportunity page', async function (Tab) {
+//     SFPage = new ParentOpportunity(this.page)
+//     await SFPage.ClickTab(Tab)
+//     console.log(`Worker ${Worker}: Select the ${Tab} Tab on Opportunity Page`)
+// })
 
-Then('Validate the WCT Underwriting it\'s in {string}', async function (Phase) {
-    SFPage = new WCT(this.page)
-    assert.ok(await SFPage.ValidationSubmit(Phase), `WCT it's not in the ${Phase} phase`)
-    console.log(`Worker ID ${Worker}:  Validate the WCT Underwriting`)
-})
+// When('Select {string} subtab on Account page', async function (Subtab) {
+//     SFPage = new Account(this.page)
+//     switch (Subtab) {
+//         case 'Contacts':
+//             await SFPage.tabContacts()
+//             break
+//         case 'Qualification':
+//             await SFPage.tabQualification()
+//             break
+//     }
+//     console.log(`Worker ${Worker}: Select ${Subtab} subtab on Account page`)
+// })
 
-Then('Validate the MICO Underwriting it\'s in {string}', async function (Phase) {
-    console.log(`Worker ID ${Worker}:  Validate the MICO Underwriting`)
-})
+// When('Click on {string} button on Standart subtab', async function (Button) {
+//     SFPage = new Account(this.page)
+//     await SFPage.ClickButton(Button)
+//     //page.elements.click(page.locators[Button])
+//     console.log(`Worker ${Worker}: Click on ${Button} button on Standart subtab`)
+// })
 
-Then('Validate the CRIMSON SAGE Underwriting it\'s in {string}', async function (Phase) {
-    console.log(`Worker ID ${Worker}:  Validate the CRIMSON SAGE Underwriting`)
-})
+// When('Select {string} as Core Product', async function (Product) {
+//     SFPage = new Account(this.page)
+//     await SFPage.SelectCoreProduct(Product)
+//     console.log(`Worker ${Worker}: Select ${Product} as Core Product`)
+// })
 
-Then('Validate the Opportunity it\'s in {string}', async function (Phase) {
-    SFPage = new ParentOpportunity(this.page)
-    assert.ok(await SFPage.ValidatePhase(Phase), `Opportunity it's not in the ${Phase} phase`)
-    console.log(`Worker ID ${Worker}:  Validate the Opportunity it\'s in ${Phase}`)
-})
+// When('Fill Scrubbing', async function () {
+//     SFPage = new Account(this.page)
+//     await SFPage.FillScrubbing()
+//     console.log(`Worker ${Worker}: Fill Scrubbing`)
+// })
+
+// When('Fill {string} {string} {string} {string} {string} {string} Scrubbing', async function (website, bstreet, bcity, bstate, bzip, bcountry) {
+//     SFPage = new Account(this.page)
+//     await SFPage.FillScrubbing(website, bstreet, bcity, bstate, bzip, bcountry)
+//     console.log(`Worker ${Worker}: Fill 2.0 Scrubbing`)
+// })
+
+// When('Fill Qualifying', async function () {
+//     SFPage = new Account(this.page)
+//     await SFPage.FillQualifying(`${FNameRun} ${LNameRun}`)
+//     console.log(`Worker ${Worker}: Fill Qualifying`)
+// })
+
+// When('Fill {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} {string} Qualifying', async function (PrimaryBusinessOption, problem, priority, wantsmedical, eorprovider, currentpayroll, hi, month, risk, vertx, anyone, stateop, intcountry, intemp, intcont) {
+//     SFPage = new Account(this.page)
+//     await SFPage.FillQualifying(`${FNameRun} ${LNameRun}`, PrimaryBusinessOption, problem, priority, wantsmedical, eorprovider, currentpayroll, hi, month, risk, vertx, anyone, stateop, intcountry, intemp, intcont)
+//     console.log(`Worker ${Worker}: Fill Qualifyingx`)
+// })
+
+// When('Fill and Complete Sales Qualified', async function () {
+//     SFPage = new Account(this.page)
+//     await SFPage.FillSales()
+//     await SFPage.FillCallOutcome()
+//     console.log(`Worker ${Worker}: Fill and Complete Sales Qualified`)
+// })
+
+// When('Fill and Complete {string} {string} {string} Sales Qualified', async function (ft, pt, nextstep) {
+//     SFPage = new Account(this.page)
+//     await SFPage.FillSales()
+//     await SFPage.FillCallOutcome(ft, pt, nextstep)
+//     console.log(`Worker ${Worker}: Fill and Complete Sales Qualifiedx`)
+// })
+
+// When('Fill Negotiate Details on Opportunity page and Save', async function () {
+//     SFPage = new ParentOpportunity(this.page)
+//     await SFPage.FillNegotiateDetails()
+//     console.log(`Worker ${Worker}: Fill Negotiate Details')
+// })
+
+// When('Visit {string} Opportunity', async function (URL_Opp) {
+//     SFPage = new LoginAccount(this.page, URL_Opp)
+//     URL = URL_Opp
+//     await SFPage.visit()
+//     console.log(`Worker ${Worker}: Visit ${URL_Opp} Opportunity`)
+// })
+
+// When('Add HIQ Underwriting', async function () {
+//     console.log(`Worker ${Worker}: Add HIQ Underwriting`)
+// })
+
+// When('Add WCT Underwriting', async function () {
+//     SFPage = new ParentOpportunity(this.page)
+//     await SFPage.AddFillWCT()
+//     console.log(`Worker ${Worker}: Add WCT Underwriting`)
+// })
+
+// When('Add MICO Underwriting', async function () {
+//     console.log(`Worker ${Worker}: Add MICO Underwriting`)
+// })
+
+// When('Add CRIMSON SAGE Underwriting', async function () {
+//     console.log(`Worker ${Worker}: Add CRIMSON SAGE Underwriting`)
+// })
+
+// When('Click on {string} link on Opportunity page', async function (link) {
+//     SFPage = new ParentOpportunity(this.page)
+//     await SFPage.ClickLink(link)
+//     console.log(`Worker ${Worker}: Click on ${link} link on Opportunity page`)
+// })
+
+// When('Click on {string} on All Accounts page', async function (element) {
+//     SFPage = new AllAccounts(this.page)
+//     await SFPage.Elements.click(this.page, SFPage.locators[element])
+//     console.log(`Worker ${Worker}: Click on ${element} on All Accounts page`)
+// })
+
+// When('Click on {string} subtab on Account page', async function (element) {
+//     SFPage = new Account(this.page)
+//     await SFPage.Elements.click(this.page, SFPage.locators[element])
+//     console.log(`Worker ${Worker}: Click on ${element} subtab on Account page`)
+// })
+
+// When('Click on {string} Tab', async function (Tab) {
+//     SFPage = new Headers(this.page, AccountProfile)
+//     switch (Tab) {
+//         case 'Account':
+//             console.log(AccountProfile)
+//             SFPage.visit()
+//             break
+//     }
+//     console.log(`Worker ${Worker}: Click on ${Tab} Tab`)
+// })
+
+// When('Fill the Required Details', async function () {
+//     SFPage = new Account(this.page)
+//     await SFPage.FillRequiredDetails(`${FNameRun} ${LNameRun}`)
+//     console.log(`Worker ${Worker}: Fill the Required Details`)
+// })
+
+// When('Fill the Required Details for a Partner Referral', async function () {
+//     SFPage = new Account(this.page)
+//     await SFPage.FillRequiredDetailsPR()
+//     console.log(`Worker ${Worker}: Fill the Required Details for a Partner Referral`)
+// })
+
+// When('Fill the Discovery Call', async function () {
+//     SFPage = new Account(this.page)
+//     await SFPage.FillDiscoveryCall()
+//     console.log(`Worker ${Worker}: Fill the Discovery Call`)
+// })
+
+// When('Click on {string} on the pop-up on Account page', async function (element) {
+//     SFPage = new Account(this.page)
+//     await SFPage.Elements.click(this.page, SFPage.locators[`Pop-up ${element}`])
+//     console.log(`Worker ${Worker}: Click on ${element} on the pop-up on Account page`)
+// })
+
+// When('Click on {string} on Account page', async function (element) {
+//     SFPage = new Account(this.page)
+//     await SFPage.Elements.click(this.page, SFPage.locators[element])
+//     console.log(`Worker ${Worker}: Click on ${element} on Account page`)
+// })
+
+// When('Select the Partner Referral on Account page', async function () {
+//     SFPage = new Account(this.page)
+//     await SFPage.SelectPartnerReferral()
+//     console.log(`Worker ${Worker}: Select the Partner Referral on Account page`)
+// })
+
+// When('Click on {string} on Parent Opportunity page', async function (element) {
+//     SFPage = new ParentOpportunity(this.page)
+//     await SFPage.Elements.click(this.page, SFPage.locators[element])
+//     console.log(`Worker ${Worker}: Click on ${element} on Parent Opportunity page`)
+// })
+
+// When('Fill Product {string} on Parent Opportunity page', async function (element) {
+//     SFPage = new ParentOpportunity(this.page)
+//     await SFPage.SelectProduct(element)
+//     console.log(`Worker ${Worker}: Click on ${element} on Parent Opportunity page`)
+// })
+
+// When('Fill Product PEO {string} on Parent Opportunity page', async function (BorP) {
+//     SFPage = new ParentOpportunity(this.page)
+//     await SFPage.PEO(BorP)
+//     console.log(`Worker ${Worker}: Click on ${BorP} on Parent Opportunity page`)
+// })
+
+// When('Validate the Child Opportunity it\'s in {string}', async function (Phase) {
+//     SFPage = new ParentOpportunity(this.page)
+//     assert.ok(await SFPage.ValidatePhase(Phase), `Opportunity it's not in the ${Phase} phase`)
+//     console.log(`Worker ${Worker}: Validate the Opportunity it\'s in ${Phase}`)
+// })
+
+// When('Click on {string} of {string} on Parent Opportunity page', async function (string, string2) {
+//     // Write code here that turns the phrase above into concrete actions
+//     return 'pending'
+// })
+
+// When('Click on {string} on pop-up Parent Opportunity page', async function (string) {
+//     // Write code here that turns the phrase above into concrete actions
+//     return 'pending'
+// })
+
+// When('Fill Discount {string} and {string} on Parent Opportunity page', async function (string, string2) {
+//     // Write code here that turns the phrase above into concrete actions
+//     return 'pending'
+// })
+
+// Then('Validate the Discount {string} is displayed on Parent Opportunity page', async function (string) {
+//     // Write code here that turns the phrase above into concrete actions
+//     return 'pending'
+// })
+
+// Then('Validate the Discount {string} is removed on Parent Opportunity page', async function (string) {
+//     // Write code here that turns the phrase above into concrete actions
+//     return 'pending'
+// })
+
+// Then('Validate the Parent Opportunity it\'s in {string}', async function (Phase) {
+//     SFPage = new ParentOpportunity(this.page)
+//     assert.ok(await SFPage.ValidateParentPhase(Phase), `Opportunity it's not in the ${Phase} phase`)
+//     console.log(`Worker ${Worker}: Validate the Opportunity it\'s in ${Phase}`)
+// })
+
+// Then('Validate the HIQ Underwriting it\'s in {string}', async function (Phase) {
+//     console.log(`Worker ${Worker}: Validate the HIQ Underwriting`)
+// })
+
+// Then('Validate the WCT Underwriting it\'s in {string}', async function (Phase) {
+//     SFPage = new WCT(this.page)
+//     assert.ok(await SFPage.ValidationSubmit(Phase), `WCT it's not in the ${Phase} phase`)
+//     console.log(`Worker ${Worker}: Validate the WCT Underwriting`)
+// })
+
+// Then('Validate the MICO Underwriting it\'s in {string}', async function (Phase) {
+//     console.log(`Worker ${Worker}: Validate the MICO Underwriting`)
+// })
+
+// Then('Validate the CRIMSON SAGE Underwriting it\'s in {string}', async function (Phase) {
+//     console.log(`Worker ${Worker}: Validate the CRIMSON SAGE Underwriting`)
+// })
+
+// Then('Validate the Opportunity it\'s in {string}', async function (Phase) {
+//     SFPage = new ParentOpportunity(this.page)
+//     assert.ok(await SFPage.ValidatePhase(Phase), `Opportunity it's not in the ${Phase} phase`)
+//     console.log(`Worker ${Worker}: Validate the Opportunity it\'s in ${Phase}`)
+// })

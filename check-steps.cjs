@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const dotenv = require('dotenv');
 
 // Load the appropriate .env file based on the ENV variable
-const envFile = `.env.${process.env.ENV || 'dev'}`;
+const envFile = `.env.${process.env.ENV || 'Dev'}`;
 dotenv.config({ path: envFile });
 
 const args = process.argv.slice(2); // Take the arguments passed by terminal
@@ -46,7 +46,7 @@ const dryRun = spawn('cucumber-js', [
   '--dry-run',
   ...tagArgs,
   '--import', 'hooks.js',
-  '--import', 'step_definitions/Steps.mjs'
+  '--import', 'tests/steps/Steps.mjs'
 ], { stdio: 'pipe', env })
 
 let output = ''
@@ -71,7 +71,7 @@ dryRun.on('close', (code) => {
       '--retry', retry,
       '--parallel', workers,
       '--import', 'hooks.js',
-      '--import', 'step_definitions/Steps.mjs'
+      '--import', 'tests/steps/Steps.mjs'
     ], { stdio: 'inherit', env })
 
     runTests.on('close', (testCode) => {
