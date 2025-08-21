@@ -1,5 +1,5 @@
 {
-  "name": "playwright-poc",
+  "name": "playwright-pucumber-project",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@cucumber/cucumber": "^11.1.0",
+    "@cucumber/cucumber": "^11.3.0",
     "@playwright/test": "^1.47.2",
     "@types/node": "^22.6.1",
     "cucumber-html-reporter": "^6.0.0"
