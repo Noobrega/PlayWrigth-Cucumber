@@ -1,4 +1,5 @@
-name: Playwright Tests
+name: Playwright Automation Tests
+description: Run Playwright tests on push and pull request events
 on:
   push:
     branches: [ main, master ]
