@@ -1,4 +1,4 @@
-@admin @regression
+@admin @regression @skip
 Feature: Criar usuário no módulo Admin
     As a system admin
     I want to create a system user

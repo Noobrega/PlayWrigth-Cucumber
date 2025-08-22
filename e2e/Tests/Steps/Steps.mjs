@@ -1,6 +1,7 @@
 import { Given, When, Then } from "@cucumber/cucumber"
 import { Comands } from "../../Common/Comands.js"
-import { Login } from "../../Pages/LoginPage.js"
+import { LoginPage } from "../../Pages/LoginPage.js"
+import { DashboardPage } from "../../Pages/DashboardPage.js"
 import assert from "assert"
 import { log } from "console"
 
@@ -19,13 +20,13 @@ let env = `.env.${process.env.ENV}`
 
 // Step para login válido
 Given('I am on the OrangeHRM login page', async function () {
-    SFPage = new Login(this.page)
+    SFPage = new LoginPage(this.page)
     await SFPage.visit()
     console.log(`Worker ${Worker} on ${env} env: Navigated to OrangeHRM login page`)
 })
 
 Given('I am logged in as {string} with password {string}', async function (username, password) {
-    SFPage = new Login(this.page)
+    SFPage = new LoginPage(this.page)
     await SFPage.login(username, password)
     console.log(`Worker ${Worker} on ${env} env: Logged in with username: ${username}`)
 })
@@ -102,133 +103,133 @@ When('I request a password reset for username {string}', async function (usernam
 
 // Step para adicionar funcionário
 When('I click {string} on PIM page', async function (buttonText) {
-//    SFPage = new PIMPage(this.page)
-//    await SFPage.clickButton(buttonText)
+    //    SFPage = new PIMPage(this.page)
+    //    await SFPage.clickButton(buttonText)
     console.log(`Worker ${Worker} on ${env} env: Clicked button: ${buttonText}`)
 })
 
 When('I fill the employee form with:', async function (dataTable) {
-//    const formData = dataTable.rowsHash()
-//    SFPage = new PIMPage(this.page)
-//    await SFPage.fillEmployeeForm(formData)
+    //    const formData = dataTable.rowsHash()
+    //    SFPage = new PIMPage(this.page)
+    //    await SFPage.fillEmployeeForm(formData)
     console.log(`Worker ${Worker} on ${env} env: Filled employee form`)
 })
 
 When('I save the employee', async function () {
-//    await SFPage.saveEmployee()
+    //    await SFPage.saveEmployee()
     console.log(`Worker ${Worker} on ${env} env: Employee saved`)
 })
 
 // Step para buscar funcionário
 When('I search employees by name {string}', async function (name) {
-//    SFPage = new PIMPage(this.page)
-//    await SFPage.searchEmployeeByName(name)
+    //    SFPage = new PIMPage(this.page)
+    //    await SFPage.searchEmployeeByName(name)
     console.log(`Worker ${Worker} on ${env} env: Searched employees by name: ${name}`)
 })
 
 When('I can open the first result to view details', async function () {
-//    await SFPage.openFirstSearchResult()
+    //    await SFPage.openFirstSearchResult()
     console.log(`Worker ${Worker} on ${env} env: Opened first search result`)
 })
 
 When('I edit personal details with:', async function (dataTable) {
-//    const details = dataTable.rowsHash()
-//    SFPage = new PIMPage(this.page)
-//    await SFPage.editPersonalDetails(details)
+    //    const details = dataTable.rowsHash()
+    //    SFPage = new PIMPage(this.page)
+    //    await SFPage.editPersonalDetails(details)
     console.log(`Worker ${Worker} on ${env} env: Edited personal details`)
 })
 
 When('I save personal details', async function () {
-//    await SFPage.savePersonalDetails()
+    //    await SFPage.savePersonalDetails()
     console.log(`Worker ${Worker} on ${env} env: Personal details saved`)
 })
 
 Then('I should see the dashboard', async function () {
-//    SFPage = new DashboardPage(this.page)
-//    const isVisible = await SFPage.isDashboardVisible()
-//    expect(isVisible).toBe(true)
+    SFPage = new DashboardPage(this.page)
+    const isVisible = await SFPage.isDashboardVisible()
+    await expect(isVisible).toBeVisible()
     console.log(`Worker ${Worker} on ${env} env: Dashboard is visible`)
 })
 
 Then('I should see my profile menu', async function () {
-//    SFPage = new DashboardPage(this.page)
-//    const isVisible = await SFPage.isProfileMenuVisible()
-//    expect(isVisible).toBe(true)
+    SFPage = new DashboardPage(this.page)
+    const isVisible = await SFPage.isProfileMenuVisible()
+    await expect(isVisible).toBeVisible()
     console.log(`Worker ${Worker} on ${env} env: Profile menu is visible`)
 })
 
 // Step para login inválido
 Then('I should see the login error message {string}', async function (errorMessage) {
-//    SFPage = new LoginPage(this.page)
-//    const error = await SFPage.getLoginErrorMessage()
-//    expect(error).toBe(errorMessage)
+    SFPage = new LoginPage(this.page)
+    const error = await SFPage.getLoginErrorMessage()
+    await expect(error).toContainText(errorMessage)
     console.log(`Worker ${Worker} on ${env} env: Login error message displayed: ${errorMessage}`)
 })
 
 Then('I should remain on the login page', async function () {
-//    const currentUrl = await this.page.url()
-//    expect(currentUrl).toContain('/auth/login')
+    const currentUrl = await this.page.url()
+    expect(currentUrl).toContain('/auth/login')
     console.log(`Worker ${Worker} on ${env} env: Remained on the login page`)
 })
 
 Then('I should see the password reset page', async function () {
-//    const currentUrl = await this.page.url()
-//    expect(currentUrl).toContain('/auth/requestPasswordResetCode')
+    //    const currentUrl = await this.page.url()
+    //    expect(currentUrl).toContain('/auth/requestPasswordResetCode')
     console.log(`Worker ${Worker} on ${env} env: Password reset page is visible`)
 })
 
 Then('I should see a confirmation message {string}', async function (confirmationMessage) {
-//    const message = await SFPage.getConfirmationMessage()
-//    expect(message).toBe(confirmationMessage)
+    //    const message = await SFPage.getConfirmationMessage()
+    //    expect(message).toBe(confirmationMessage)
     console.log(`Worker ${Worker} on ${env} env: Confirmation message displayed: ${confirmationMessage}`)
 })
 
 Then('I should see the {string} header', async function (headerText) {
-//    const header = await SFPage.getHeaderText()
-//    expect(header).toBe(headerText)
+    //    const header = await SFPage.getHeaderText()
+    //    expect(header).toBe(headerText)
     console.log(`Worker ${Worker} on ${env} env: Header displayed: ${headerText}`)
 })
 
 Then('I should return to the login page', async function () {
-//    const currentUrl = await this.page.url()
-//    expect(currentUrl).toContain('/auth/login')
+    //    const currentUrl = await this.page.url()
+    //    expect(currentUrl).toContain('/auth/login')
     console.log(`Worker ${Worker} on ${env} env: Returned to the login page`)
 })
 
 Then('I should see a success toast {string}', async function (toastMessage) {
-//    const message = await SFPage.getSuccessToastMessage()
-//    expect(message).toBe(toastMessage)
+    //    const message = await SFPage.getSuccessToastMessage()
+    //    expect(message).toBe(toastMessage)
     console.log(`Worker ${Worker} on ${env} env: Success toast displayed: ${toastMessage}`)
 })
 
 Then('I should find the user {string} in the users list', async function (username) {
-//    const userExists = await SFPage.isUserInList(username)
-//    expect(userExists).toBe(true)
+    //    const userExists = await SFPage.isUserInList(username)
+    //    expect(userExists).toBe(true)
     console.log(`Worker ${Worker} on ${env} env: User found in list: ${username}`)
 })
 
 Then('I should see the Personal Details page', async function () {
-//    const currentUrl = await this.page.url()
-//    expect(currentUrl).toContain('/pim/viewPersonalDetails')
+    //    const currentUrl = await this.page.url()
+    //    expect(currentUrl).toContain('/pim/viewPersonalDetails')
     console.log(`Worker ${Worker} on ${env} env: Personal Details page is visible`)
 })
 
 Then('The employee full name should be {string}', async function (fullName) {
-//    const displayedName = await SFPage.getEmployeeFullName()
-//    expect(displayedName).toBe(fullName)
+    //    const displayedName = await SFPage.getEmployeeFullName()
+    //    expect(displayedName).toBe(fullName)
     console.log(`Worker ${Worker} on ${env} env: Employee full name displayed: ${fullName}`)
 })
 
 Then('I should see at least one result containing {string}', async function (name) {
-//    const results = await SFPage.getSearchResults()
-//    expect(results.some(result => result.includes(name))).toBe(true)
+    //    const results = await SFPage.getSearchResults()
+    //    expect(results.some(result => result.includes(name))).toBe(true)
     console.log(`Worker ${Worker} on ${env} env: Search results contain name: ${name}`)
 })
 
 Then('The personal details should reflect:', async function (dataTable) {
-//    const expectedDetails = dataTable.rowsHash()
-//    const actualDetails = await SFPage.getPersonalDetails()
-//    expect(actualDetails).toEqual(expectedDetails)
+    //    const expectedDetails = dataTable.rowsHash()
+    //    const actualDetails = await SFPage.getPersonalDetails()
+    //    expect(actualDetails).toEqual(expectedDetails)
     console.log(`Worker ${Worker} on ${env} env: Personal details updated correctly`)
 })
 

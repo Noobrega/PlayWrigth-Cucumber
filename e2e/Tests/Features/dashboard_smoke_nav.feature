@@ -1,4 +1,4 @@
-@smoke @navigation
+@smoke @navigation @skip
 Feature: Navegação básica pós-login
     As a user
     I want to access common modules

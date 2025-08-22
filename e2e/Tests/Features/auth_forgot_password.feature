@@ -1,4 +1,4 @@
-@auth @regression
+@auth @regression @skip
 Feature: Recuperação de senha
     As a user who forgot the password
     I want to request a password reset

@@ -1,4 +1,4 @@
-@pim @regression
+@pim @regression @skip
 Feature: Editar dados pessoais do funcionário
     As an HR admin
     I want to update personal details

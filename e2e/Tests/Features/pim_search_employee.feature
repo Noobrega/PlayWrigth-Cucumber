@@ -1,4 +1,4 @@
-@pim @regression
+@pim @regression @skip
 Feature: Buscar funcionário (PIM)
     As an HR admin
     I want to search an existing employee

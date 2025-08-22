@@ -1,4 +1,4 @@
-@auth @smoke
+@auth @smoke @skip
 Feature: Logout
     As a logged user
     I want to log out

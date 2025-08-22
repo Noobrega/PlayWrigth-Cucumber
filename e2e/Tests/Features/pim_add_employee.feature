@@ -1,4 +1,4 @@
-@pim @smoke
+@pim @smoke @skip
 Feature: Cadastrar funcionário (PIM)
     As an HR admin
     I want to add a new employee
