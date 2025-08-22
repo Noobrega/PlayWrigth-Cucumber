@@ -9,5 +9,6 @@ Feature: Logout
 
     Scenario: Logout pelo menu de usuário
         When I open the user menu
-        And I click "Logout"
+        And I click "Logout" on Dashboard Page
+        Then I should see the login page
         Then I should return to the login page

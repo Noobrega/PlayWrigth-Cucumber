@@ -9,7 +9,7 @@ Feature: Cadastrar funcionário (PIM)
         And I navigate to the "PIM" section
 
     Scenario Outline: Criar novo funcionário com dados mínimos
-        When I click "Add Employee"
+        When I click "Add Employee" on PIM page
         And I fill the employee form with:
             | First Name | <first> |
             | Last Name  | <last>  |

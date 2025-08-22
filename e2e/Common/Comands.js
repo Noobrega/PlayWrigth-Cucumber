@@ -1,6 +1,6 @@
 import { error } from "console"
-import { Names } from "../test-data/Names.js"
-import { Surames } from "../test-data/Surnames.js"
+import { Names } from "../Docs/Names.js";
+import { Surames } from "../Docs/Surnames.js"
 import { paths } from "./paths.js";
 import path from "path";
 import * as fs from 'fs';

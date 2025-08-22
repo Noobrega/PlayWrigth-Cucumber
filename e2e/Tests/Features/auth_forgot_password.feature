@@ -8,7 +8,7 @@ Feature: Recuperação de senha
         Given I am on the OrangeHRM login page
 
     Scenario: Abrir fluxo de "Forgot your password?"
-        When I click "Forgot your password?"
+        When I click "Forgot your password?" on Login page
         Then I should see the password reset page
 
     Scenario: Solicitar reset com usuário existente

@@ -5,10 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test:Dev": "ENV=Dev node check-steps.cjs",
-    "test:QA": "ENV=QA node check-steps.cjs",
-    "test:UAT": "ENV=UAT node check-steps.cjs",
-    "test:Prod": "ENV=Prod node check-steps.cjs"
+    "test:Dev": "cross-env ENV=Dev node check-steps.cjs",
+    "test:QA": "cross-env ENV=QA node check-steps.cjs",
+    "test:UAT": "cross-env ENV=UAT node check-steps.cjs",
+    "test:Prod": "cross-env ENV=Prod node check-steps.cjs"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "@cucumber/cucumber": "^11.3.0",
     "@playwright/test": "^1.47.2",
     "@types/node": "^22.6.1",
+    "cross-env": "^10.0.0",
     "cucumber-html-reporter": "^6.0.0"
   },
   "dependencies": {
