@@ -1,6 +1,6 @@
 import { Before, After, AfterAll, setDefaultTimeout, BeforeAll } from "@cucumber/cucumber";
 import { chromium } from 'playwright';
-import { paths } from "./e2e/Common/paths.js";
+import { paths } from "./e2e/Common/Paths.js";
 import * as fs from 'fs';
 import path from "path";
 
@@ -50,52 +50,89 @@ Before(async function () {
 
 After(async function (scenario) {
     try {
-        const TestName = OneNameRun(scenario.pickle.name, TestResults)
-        const Status = scenario.result.status.toUpperCase()
-        const Name = this.DataName
-        const Email = this.DataEmail
-        const ULID = this.CanodicalULID
-        const URL = this.AccountURL
-        const CID = "C" + this.CompID
-        const steps = scenario.pickle.steps.map(step => step.text)
-        const WorkerID = `${process.env.CUCUMBER_WORKER_ID}`
-        const Details = { Name, Email, ULID, CID, URL, steps}
-        TestResults.push({ TestName, Status, WorkerID, Details })
-        try {
-            if (this.page.video()) {
-                const VideoPath = await this.page.video().path()
-                const TSName = TestName.replace(/[^a-zA-Z0-9-_]/g, '_')
-                const NewVideoPath = path.join(paths.dataVideosDir, `${TSName}.webm`)
-                fs.renameSync(VideoPath, NewVideoPath)
-            }
-        } catch (error) {
-            console.log('Error when tried rename the video: ', error.message)
-        }
+        const TestName = OneNameRun(scenario.pickle.name, TestResults);
+        const Status = scenario.result.status.toUpperCase();
+        const Name = this.DataName;
+        const Email = this.DataEmail;
+        const ULID = this.CanodicalULID;
+        const URL = this.AccountURL;
+        const CID = "C" + this.CompID;
+        const steps = scenario.pickle.steps.map(s => s.text);
+        const WorkerID = String(process.env.CUCUMBER_WORKER_ID ?? '');
+        const Details = { Name, Email, ULID, CID, URL, steps };
+
+        TestResults.push({ TestName, Status, WorkerID, Details });
+
+        // --- handle video safely ---
+        const video = this.page?.video(); // capture the handle before closing the page
+
+        // Take screenshot on failure (before closing so the page is alive)
         if (Status === 'FAILED') {
-            const ScenarioName = TestName.replace(/ /g, '_')
-            const ScreenshotPath = path.join(paths.screenshotsDir, `${ScenarioName}_failed.png`)
             try {
-                if (this.page) {
-                    await this.page.screenshot({ path: ScreenshotPath, fullpage: true })
-                    console.log(`Screenshot saved: ${ScenarioName}`)
-                }
-            } catch (error) {
-                console.log('Error to take screenshot: ', error.message)
+                const scenarioSafe = TestName.replace(/[^a-zA-Z0-9-_]/g, '_');
+                const screenshotPath = path.join(paths.screenshotsDir, `${scenarioSafe}_failed.png`);
+                ensureDir(paths.screenshotsDir);
+                await this.page.screenshot({ path: screenshotPath, fullPage: true });
+                console.log(`[INFO] Screenshot saved: ${screenshotPath}`);
+            } catch (err) {
+                console.log('[WARN] Failed to take screenshot:', err.message);
             }
         }
-        if (this.page) {
-            await this.page.close()
-            await this.context.close()
-            await this.browser.close()
+
+        // Close page/context/browser to finalize the video file
+        if (this.page) await this.page.close();
+        if (this.context) await this.context.close(); // <— this flushes the video to disk
+        if (this.browser) await this.browser.close();
+
+        // save video AFTER context closed
+        if (video) {
+            try {
+                ensureDir(paths.dataVideosDir);
+
+                const safeBase = TestName.replace(/[^a-zA-Z0-9-_]/g, '_');
+                const destPath = path.join(paths.dataVideosDir, `${safeBase}.webm`);
+
+                // 1) get temp path (after context.close())
+                const tmpPath = await retry(() => video.path(), 10, 200);
+
+                // 2) copy (more robust than rename on Windows)
+                await retry(() => fs.promises.copyFile(tmpPath, destPath), 10, 200);
+
+                // 3) cleanup temp artifact
+                await video.delete().catch(() => { });
+
+                console.log(`[INFO] Video saved: ${destPath}`);
+            } catch (err) {
+                console.error('[WARN] Failed to save video:', err?.stack || err);
+            }
         }
     } catch (error) {
-        console.log('Error to close browser: ', error.message)
+        console.log('[ERROR] After hook failed:', error.message);
+        // best effort close if something stayed open
+        try { if (this.page) await this.page.close(); } catch { }
+        try { if (this.context) await this.context.close(); } catch { }
+        try { if (this.browser) await this.browser.close(); } catch { }
     }
 })
 
 AfterAll(function () {
     SaveJsonFile('run info', TestResults)
 })
+
+function ensureDir(dir) {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+}
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function retry(fn, tries = 10, delayMs = 200) {
+    let lastErr;
+    for (let i = 0; i < tries; i++) {
+        try { return await fn(); }
+        catch (e) { lastErr = e; await sleep(delayMs); }
+    }
+    throw lastErr;
+}
 
 function SaveJsonFile(NameFile, Data) {
     NameFile = NameFile.replace(/ /g, '_')

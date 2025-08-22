@@ -8,13 +8,13 @@ Feature: Autenticação no OrangeHRM
     Given I am on the OrangeHRM login page
 
   @positive
-  Scenario: Login válido com credenciais de administrador
+  Scenario: Login valido com credenciais de administrador
     When I log in with username "Admin" and password "admin123"
     Then I should see the dashboard
     And I should see my profile menu
 
   @negative
-  Scenario Outline: Login inválido
+  Scenario Outline: Login invalido
     When I log in with username "<username>" and password "<password>"
     Then I should see the login error message "Invalid credentials"
     And I should remain on the login page
