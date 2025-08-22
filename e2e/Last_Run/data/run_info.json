@@ -1,36 +1,8 @@
 [
   {
-    "TestName": "Login inválido",
+    "TestName": "Login invalido",
     "Status": "FAILED",
-    "WorkerID": "4",
-    "Details": {
-      "CID": "Cundefined",
-      "steps": [
-        "I am on the OrangeHRM login page",
-        "I log in with username \"Unknown\" and password \"admin123\"",
-        "I should see the login error message \"Invalid credentials\"",
-        "I should remain on the login page"
-      ]
-    }
-  },
-  {
-    "TestName": "Login inválido Run 02",
-    "Status": "FAILED",
-    "WorkerID": "4",
-    "Details": {
-      "CID": "Cundefined",
-      "steps": [
-        "I am on the OrangeHRM login page",
-        "I log in with username \"Unknown\" and password \"admin123\"",
-        "I should see the login error message \"Invalid credentials\"",
-        "I should remain on the login page"
-      ]
-    }
-  },
-  {
-    "TestName": "Login inválido",
-    "Status": "FAILED",
-    "WorkerID": "3",
+    "WorkerID": "0",
     "Details": {
       "CID": "Cundefined",
       "steps": [
@@ -42,9 +14,9 @@
     }
   },
   {
-    "TestName": "Login inválido Run 02",
+    "TestName": "Login invalido Run 02",
     "Status": "FAILED",
-    "WorkerID": "3",
+    "WorkerID": "0",
     "Details": {
       "CID": "Cundefined",
       "steps": [
@@ -56,37 +28,9 @@
     }
   },
   {
-    "TestName": "Login válido com credenciais de administrador",
+    "TestName": "Login invalido",
     "Status": "FAILED",
-    "WorkerID": "2",
-    "Details": {
-      "CID": "Cundefined",
-      "steps": [
-        "I am on the OrangeHRM login page",
-        "I log in with username \"Admin\" and password \"admin123\"",
-        "I should see the dashboard",
-        "I should see my profile menu"
-      ]
-    }
-  },
-  {
-    "TestName": "Login válido com credenciais de administrador Run 02",
-    "Status": "FAILED",
-    "WorkerID": "2",
-    "Details": {
-      "CID": "Cundefined",
-      "steps": [
-        "I am on the OrangeHRM login page",
-        "I log in with username \"Admin\" and password \"admin123\"",
-        "I should see the dashboard",
-        "I should see my profile menu"
-      ]
-    }
-  },
-  {
-    "TestName": "Login inválido",
-    "Status": "FAILED",
-    "WorkerID": "0",
+    "WorkerID": "3",
     "Details": {
       "CID": "Cundefined",
       "steps": [
@@ -98,9 +42,9 @@
     }
   },
   {
-    "TestName": "Login inválido Run 02",
+    "TestName": "Login invalido Run 02",
     "Status": "FAILED",
-    "WorkerID": "0",
+    "WorkerID": "3",
     "Details": {
       "CID": "Cundefined",
       "steps": [
@@ -112,9 +56,65 @@
     }
   },
   {
-    "TestName": "Login inválido",
+    "TestName": "Login valido com credenciais de administrador",
     "Status": "FAILED",
     "WorkerID": "1",
+    "Details": {
+      "CID": "Cundefined",
+      "steps": [
+        "I am on the OrangeHRM login page",
+        "I log in with username \"Admin\" and password \"admin123\"",
+        "I should see the dashboard",
+        "I should see my profile menu"
+      ]
+    }
+  },
+  {
+    "TestName": "Login valido com credenciais de administrador Run 02",
+    "Status": "FAILED",
+    "WorkerID": "1",
+    "Details": {
+      "CID": "Cundefined",
+      "steps": [
+        "I am on the OrangeHRM login page",
+        "I log in with username \"Admin\" and password \"admin123\"",
+        "I should see the dashboard",
+        "I should see my profile menu"
+      ]
+    }
+  },
+  {
+    "TestName": "Login invalido",
+    "Status": "FAILED",
+    "WorkerID": "2",
+    "Details": {
+      "CID": "Cundefined",
+      "steps": [
+        "I am on the OrangeHRM login page",
+        "I log in with username \"Unknown\" and password \"admin123\"",
+        "I should see the login error message \"Invalid credentials\"",
+        "I should remain on the login page"
+      ]
+    }
+  },
+  {
+    "TestName": "Login invalido Run 02",
+    "Status": "FAILED",
+    "WorkerID": "2",
+    "Details": {
+      "CID": "Cundefined",
+      "steps": [
+        "I am on the OrangeHRM login page",
+        "I log in with username \"Unknown\" and password \"admin123\"",
+        "I should see the login error message \"Invalid credentials\"",
+        "I should remain on the login page"
+      ]
+    }
+  },
+  {
+    "TestName": "Login invalido",
+    "Status": "FAILED",
+    "WorkerID": "4",
     "Details": {
       "CID": "Cundefined",
       "steps": [
@@ -126,9 +126,9 @@
     }
   },
   {
-    "TestName": "Login inválido Run 02",
+    "TestName": "Login invalido Run 02",
     "Status": "FAILED",
-    "WorkerID": "1",
+    "WorkerID": "4",
     "Details": {
       "CID": "Cundefined",
       "steps": [

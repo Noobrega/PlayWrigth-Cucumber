@@ -73,7 +73,7 @@ After(async function (scenario) {
                 const screenshotPath = path.join(paths.screenshotsDir, `${scenarioSafe}_failed.png`);
                 ensureDir(paths.screenshotsDir);
                 await this.page.screenshot({ path: screenshotPath, fullPage: true });
-                console.log(`[INFO] Screenshot saved: ${screenshotPath}`);
+                //console.log(`[INFO] Screenshot saved: ${screenshotPath}`);
             } catch (err) {
                 console.log('[WARN] Failed to take screenshot:', err.message);
             }
@@ -84,24 +84,37 @@ After(async function (scenario) {
         if (this.context) await this.context.close(); // <— this flushes the video to disk
         if (this.browser) await this.browser.close();
 
-        // save video AFTER context closed
+        // ---- SAVE VIDEO (robust + forced cleanup on Windows) ----
         if (video) {
             try {
                 ensureDir(paths.dataVideosDir);
 
                 const safeBase = TestName.replace(/[^a-zA-Z0-9-_]/g, '_');
-                const destPath = path.join(paths.dataVideosDir, `${safeBase}.webm`);
+                const suffix = process.env.CUCUMBER_WORKER_ID ? `Worker_${process.env.CUCUMBER_WORKER_ID}_` : '';
+                const destPath = path.join(paths.dataVideosDir, `${suffix}${safeBase}.webm`);
 
-                // 1) get temp path (after context.close())
+                // 1) caminho temporário gerenciado pelo Playwright
                 const tmpPath = await retry(() => video.path(), 10, 200);
 
-                // 2) copy (more robust than rename on Windows)
+                // 2) copia para o nome final (mais estável que rename em NTFS)
                 await retry(() => fs.promises.copyFile(tmpPath, destPath), 10, 200);
 
-                // 3) cleanup temp artifact
+                // 3) tenta deletar via API do Playwright
                 await video.delete().catch(() => { });
 
-                console.log(`[INFO] Video saved: ${destPath}`);
+                // 4) garantia extra: se o temporário ainda existe, remove manualmente
+                try {
+                    await retry(async () => {
+                        if (fs.existsSync(tmpPath)) {
+                            await fs.promises.unlink(tmpPath);
+                        }
+                    }, 5, 200);
+                } catch (_) {
+                    // último fallback: log apenas (não falha o teste)
+                    console.warn('[WARN] Could not unlink temp video:', tmpPath);
+                }
+
+                console.log('[INFO] Video saved:', destPath);
             } catch (err) {
                 console.error('[WARN] Failed to save video:', err?.stack || err);
             }
