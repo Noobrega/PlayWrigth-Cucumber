@@ -1,15 +1,15 @@
 {
     "default": {
         "import": [ 
-            "./e2e/tests/steps/*.mjs" 
+            "./e2e/Tests/Steps/*.mjs" 
         ],
         "format":[
             "progress",
-            "html:./e2e/reports/cucumber_reports.html"
+            "html:./e2e/Reports/cucumber_reports.html"
             
         ],
         "paths": [
-            "./e2e/tests/features/*.feature"
+            "./e2e/Tests/Features/*.feature"
         ]
     }
 }

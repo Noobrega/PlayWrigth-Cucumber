@@ -1,4 +1,5 @@
-name: Playwright Tests
+name: Playwright Automation Tests
+description: Run Playwright tests on push and pull request events
 on:
   push:
     branches: [ main, master ]
@@ -18,7 +19,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: npm test
+        run: npm run test:QA
       - uses: actions/upload-artifact@v4
         if: ${{ ! cancelled() }}
         with:
