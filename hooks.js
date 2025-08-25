@@ -24,6 +24,10 @@ BeforeAll(function () {
         CleanFolder(paths.screenshotsDir)
         CleanFolder(paths.dataVideosDir)
     }
+    console.log('ls e2e/Tests/Features:', require('fs').readdirSync('e2e/Tests/Features').join('\n'))
+    console.log('steps exists?', require('fs').existsSync('e2e/Tests/Steps/Steps.mjs'))
+    console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
+
 })
 
 Before(async function () {
