@@ -20,12 +20,22 @@ let env = `.env.${process.env.ENV}`
 
 // Step para login válido
 Given('I am on the OrangeHRM login page', async function () {
+    console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------');
+    console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
+    console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
+    console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
+    console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------');
     SFPage = new LoginPage(this.page)
     await SFPage.visit()
     console.log(`Worker ${Worker} on ${env} env: Navigated to OrangeHRM login page`)
 })
 
 Given('I am logged in as {string} with password {string}', async function (username, password) {
+    console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------');
+    console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
+    console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
+    console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
+    console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------');
     SFPage = new LoginPage(this.page)
     await SFPage.login(username, password)
     console.log(`Worker ${Worker} on ${env} env: Logged in with username: ${username}`)

@@ -84,6 +84,12 @@ const imports = [
 const dryArgs = ['--dry-run', ...tagArgs, ...imports];
 let dryOut = '';
 
+console.log('---------------------------------- CHECK-STEPS ----------------------------------');
+console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
+console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
+console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
+console.log('---------------------------------- CHECK-STEPS ----------------------------------');
+
 const dry = runCucumber(dryArgs, 'pipe');
 dry.stdout.on('data', d => { dryOut += d.toString(); });
 dry.stderr.on('data', d => process.stderr.write(d));
