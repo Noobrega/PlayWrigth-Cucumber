@@ -1,8 +1,8 @@
-import { Before, After, AfterAll, setDefaultTimeout, BeforeAll } from "@cucumber/cucumber";
-import { chromium } from 'playwright';
-import { paths } from "./e2e/Common/Paths.js";
-import * as fs from 'fs';
-import path from "path";
+import { Before, After, AfterAll, setDefaultTimeout, BeforeAll } from "@cucumber/cucumber"
+import { chromium } from 'playwright'
+import { paths } from "./e2e/Common/Paths.js"
+import * as fs from 'fs'
+import path from "path"
 
 
 let TestResults = []
@@ -11,7 +11,7 @@ const ActionTime = 40_000
 const Width = 1280
 const Height = 720
 
-setDefaultTimeout(180_000);
+setDefaultTimeout(180_000)
 
 BeforeAll(function () {
     if (process.env.CUCUMBER_WORKER_ID == 0) {
@@ -24,12 +24,12 @@ BeforeAll(function () {
         CleanFolder(paths.screenshotsDir)
         CleanFolder(paths.dataVideosDir)
     }
-    console.log('---------------------------------- HOOKS ----------------------------------');
+    console.log('---------------------------------- HOOKS ----------------------------------')
     console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
     console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
-    console.log('env:', process.env.ENV || 'not defined');
+    console.log('env:', process.env.ENV || 'not defined')
     console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
-    console.log('---------------------------------- HOOKS ----------------------------------');
+    console.log('---------------------------------- HOOKS ----------------------------------')
 })
 
 Before(async function () {
@@ -56,18 +56,18 @@ Before(async function () {
 
 After(async function (scenario) {
     try {
-        const TestName = OneNameRun(scenario.pickle.name, TestResults);
-        const Status = scenario.result.status.toUpperCase();
-        const Name = this.DataName;
-        const Email = this.DataEmail;
-        const ULID = this.CanodicalULID;
-        const URL = this.AccountURL;
-        const CID = "C" + this.CompID;
-        const steps = scenario.pickle.steps.map(s => s.text);
-        const WorkerID = String(process.env.CUCUMBER_WORKER_ID ?? '');
-        const Details = { Name, Email, ULID, CID, URL, steps };
+        const TestName = OneNameRun(scenario.pickle.name, TestResults)
+        const Status = scenario.result.status.toUpperCase()
+        const Name = this.DataName
+        const Email = this.DataEmail
+        const ULID = this.CanodicalULID
+        const URL = this.AccountURL
+        const CID = "C" + this.CompID
+        const steps = scenario.pickle.steps.map(s => s.text)
+        const WorkerID = String(process.env.CUCUMBER_WORKER_ID ?? '')
+        const Details = { Name, Email, ULID, CID, URL, steps }
 
-        TestResults.push({ TestName, Status, WorkerID, Details });
+        TestResults.push({ TestName, Status, WorkerID, Details })
 
         // --- handle video safely ---
         const video = this.page?.video(); // capture the handle before closing the page
@@ -75,58 +75,58 @@ After(async function (scenario) {
         // Take screenshot on failure (before closing so the page is alive)
         if (Status === 'FAILED') {
             try {
-                const scenarioSafe = TestName.replace(/[^a-zA-Z0-9-_]/g, '_');
-                const screenshotPath = path.join(paths.screenshotsDir, `${scenarioSafe}_failed.png`);
-                ensureDir(paths.screenshotsDir);
-                await this.page.screenshot({ path: screenshotPath, fullPage: true });
-                //console.log(`[INFO] Screenshot saved: ${screenshotPath}`);
+                const scenarioSafe = TestName.replace(/[^a-zA-Z0-9-_]/g, '_')
+                const screenshotPath = path.join(paths.screenshotsDir, `${scenarioSafe}_failed.png`)
+                ensureDir(paths.screenshotsDir)
+                await this.page.screenshot({ path: screenshotPath, fullPage: true })
+                //console.log(`[INFO] Screenshot saved: ${screenshotPath}`)
             } catch (err) {
-                console.log('[WARN] Failed to take screenshot:', err.message);
+                console.log('[WARN] Failed to take screenshot:', err.message)
             }
         }
 
         // Close page/context/browser to finalize the video file
-        if (this.page) await this.page.close();
+        if (this.page) await this.page.close()
         if (this.context) await this.context.close(); // <— this flushes the video to disk
-        if (this.browser) await this.browser.close();
+        if (this.browser) await this.browser.close()
 
         // ---- SAVE VIDEO (robust + forced cleanup on Windows) ----
         if (video) {
             try {
-                ensureDir(paths.dataVideosDir);
+                ensureDir(paths.dataVideosDir)
 
-                const safeBase = TestName.replace(/[^a-zA-Z0-9-_]/g, '_');
-                const suffix = process.env.CUCUMBER_WORKER_ID ? `Worker_${process.env.CUCUMBER_WORKER_ID}_` : '';
-                const destPath = path.join(paths.dataVideosDir, `${suffix}${safeBase}.webm`);
+                const safeBase = TestName.replace(/[^a-zA-Z0-9-_]/g, '_')
+                const suffix = process.env.CUCUMBER_WORKER_ID ? `Worker_${process.env.CUCUMBER_WORKER_ID}_` : ''
+                const destPath = path.join(paths.dataVideosDir, `${suffix}${safeBase}.webm`)
 
                 // 1) caminho temporário gerenciado pelo Playwright
-                const tmpPath = await retry(() => video.path(), 10, 200);
+                const tmpPath = await retry(() => video.path(), 10, 200)
 
                 // 2) copia para o nome final (mais estável que rename em NTFS)
-                await retry(() => fs.promises.copyFile(tmpPath, destPath), 10, 200);
+                await retry(() => fs.promises.copyFile(tmpPath, destPath), 10, 200)
 
                 // 3) tenta deletar via API do Playwright
-                await video.delete().catch(() => { });
+                await video.delete().catch(() => { })
 
                 // 4) garantia extra: se o temporário ainda existe, remove manualmente
                 try {
                     await retry(async () => {
                         if (fs.existsSync(tmpPath)) {
-                            await fs.promises.unlink(tmpPath);
+                            await fs.promises.unlink(tmpPath)
                         }
-                    }, 5, 200);
+                    }, 5, 200)
                 } catch (_) {
                     // último fallback: log apenas (não falha o teste)
-                    console.warn('[WARN] Could not unlink temp video:', tmpPath);
+                    console.warn('[WARN] Could not unlink temp video:', tmpPath)
                 }
 
-                console.log('[INFO] Video saved:', destPath);
+                console.log('[INFO] Video saved:', destPath)
             } catch (err) {
-                console.error('[WARN] Failed to save video:', err?.stack || err);
+                console.error('[WARN] Failed to save video:', err?.stack || err)
             }
         }
     } catch (error) {
-        console.log('[ERROR] After hook failed:', error.message);
+        console.log('[ERROR] After hook failed:', error.message)
         // best effort close if something stayed open
         try { if (this.page) await this.page.close(); } catch { }
         try { if (this.context) await this.context.close(); } catch { }
@@ -139,18 +139,18 @@ AfterAll(function () {
 })
 
 function ensureDir(dir) {
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
 }
 
-const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 
 async function retry(fn, tries = 10, delayMs = 200) {
-    let lastErr;
+    let lastErr
     for (let i = 0; i < tries; i++) {
         try { return await fn(); }
         catch (e) { lastErr = e; await sleep(delayMs); }
     }
-    throw lastErr;
+    throw lastErr
 }
 
 function SaveJsonFile(NameFile, Data) {
