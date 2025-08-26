@@ -2,6 +2,7 @@ import { Given, When, Then } from "@cucumber/cucumber"
 import { Comands } from "../../Common/Comands.js"
 import { LoginPage } from "../../Pages/LoginPage.js"
 import { DashboardPage } from "../../Pages/DashboardPage.js"
+import * as fs from 'fs';
 import assert from "assert"
 import { log } from "console"
 

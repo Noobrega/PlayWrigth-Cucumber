@@ -1,7 +1,8 @@
 import { Comands } from "../Common/Comands.js"
-import { paths } from "../Common/paths.js"
+import { paths } from "../Common/Paths.js"
 import Elements from "../Common/Elements.js"
 import IFrame from "../Common/iFrame.js"
+import * as fs from 'fs';
 
 export class Base {
     constructor(page, url = process.env.baseUrl) {
