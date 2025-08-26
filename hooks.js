@@ -27,6 +27,7 @@ BeforeAll(function () {
     console.log('---------------------------------- HOOKS ----------------------------------');
     console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
     console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
+    console.log('env:', process.env.ENV || 'not defined');
     console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
     console.log('---------------------------------- HOOKS ----------------------------------');
 })
