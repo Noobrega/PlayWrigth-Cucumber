@@ -22,5 +22,6 @@ Feature: Autenticação no OrangeHRM
       | username | password  |
       | Admin    | wrongpass |
       | Unknown  | admin123  |
-      |     1    | admin123  |
-      | Admin    |     1     |
+      | 1        | admin123  |
+      | Admin    |        1  |
+

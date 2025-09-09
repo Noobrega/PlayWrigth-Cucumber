@@ -3,6 +3,7 @@ import { paths } from "../Common/Paths.js"
 import Elements from "../Common/Elements.js"
 import IFrame from "../Common/iFrame.js"
 import * as fs from 'fs'
+import { expect } from "@playwright/test"
 
 export class LoginPage {
     constructor(page, url = process.env.baseUrl) {
@@ -19,7 +20,8 @@ export class LoginPage {
             "Username Field": this.page.getByPlaceholder('Username'),
             "Password Field": this.page.getByPlaceholder('Password'),
             "Login Button": this.page.getByRole('button', { name: 'Login' }),
-            "Invalid Credentials Message": this.page.getByRole('alert').locator('div').filter({ hasText: 'Invalid credentials' }),
+            "Error Message": this.page.locator('.oxd-alert-content-text'),
+            //"Error Message": this.page.locator('//p[contains(@class,"alert-content-error")]'),
         }
     }
 
@@ -30,8 +32,8 @@ export class LoginPage {
         await this.Elements.click(this.page, this.locators["Login Button"])
     }
 
-    async getLoginErrorMessage() {
-        return await this.Elements.waitElementBeVisible(this.page, this.locators["Invalid Credentials Message"])
+    async getLoginErrorMessage(errorMessage) {
+        await this.Elements.ExpectText(this.page, this.locators["Error Message"], errorMessage)
     }
 
     async visit() {

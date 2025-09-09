@@ -236,7 +236,7 @@ class Elements {
     }
 
     // =======================
-    // ✅ CHECKBOXES & RADIOS
+    // ✅ CHECKBOXES & RADIOS & ASSERTS
     // =======================
 
     /**
@@ -249,6 +249,19 @@ class Elements {
     async check(page, selectorOrLocator, options = {}) {
         const locator = await this.waitElementBeVisible(page, selectorOrLocator)
         await locator.check(options)
+    }
+
+    /**
+    * Check a checkbox or radio input.
+    * @param {import('@playwright/test').Page} page
+    * @param {string|import('@playwright/test').Locator} selectorOrLocator
+    * @param {string} text
+    * @param {object} [options]
+    * @example await elements.check(page, '#terms')
+    */
+    async ExpectText(page, selectorOrLocator, text, options = {}) {
+        const locator = await this.waitElementBeVisible(page, selectorOrLocator)
+        await expect(locator).toHaveText(text, options)
     }
 
     /**
