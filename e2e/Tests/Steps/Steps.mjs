@@ -2,7 +2,7 @@ import { Given, When, Then } from "@cucumber/cucumber"
 import { Comands } from "../../Common/Comands.js"
 import { LoginPage } from "../../Pages/LoginPage.js"
 import { DashboardPage } from "../../Pages/DashboardPage.js"
-import * as fs from 'fs';
+import * as fs from 'fs'
 import assert from "assert"
 import { log } from "console"
 
@@ -18,25 +18,24 @@ let URL = ""
 let Worker = `${process.env.CUCUMBER_WORKER_ID}`
 let env = `.env.${process.env.ENV}`
 
-
 // Step para login válido
 Given('I am on the OrangeHRM login page', async function () {
-    console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------');
+    console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------')
     console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
     console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
     console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
-    console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------');
+    console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------')
     SFPage = new LoginPage(this.page)
     await SFPage.visit()
     console.log(`Worker ${Worker} on ${env} env: Navigated to OrangeHRM login page`)
 })
 
 Given('I am logged in as {string} with password {string}', async function (username, password) {
-    console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------');
+    console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------')
     console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
     console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
     console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
-    console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------');
+    console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------')
     SFPage = new LoginPage(this.page)
     await SFPage.login(username, password)
     console.log(`Worker ${Worker} on ${env} env: Logged in with username: ${username}`)
@@ -52,7 +51,7 @@ Given('I open employee {string} from search results', async function (name) {
 Given('I am on the password reset page', async function () {
     // Write code here that turns the phrase above into concrete actions
     console.log(`Worker ${Worker} on ${env} env: OK`)
-});
+})
 
 // Step para recuperação de senha
 When('I click {string} on Login page', async function (elementText) {
@@ -62,8 +61,8 @@ When('I click {string} on Login page', async function (elementText) {
 })
 
 When('I log in with username {string} and password {string}', async function (username, password) {
-    // SFPage = new LoginPage(this.page)
-    // await SFPage.login(username, password)
+    SFPage = new LoginPage(this.page)
+    await SFPage.login(username, password)
     console.log(`Worker ${Worker} on ${env} env: Logged in with username: ${username}`)
 })
 
@@ -247,27 +246,27 @@ Then('The personal details should reflect:', async function (dataTable) {
 Then('the employee full name should be {string}', async function (string) {
     // Write code here that turns the phrase above into concrete actions
     console.log(`Worker ${Worker} on ${env} env: OK`)
-});
+})
 
 Then('the personal details should reflect:', async function (dataTable) {
     // Write code here that turns the phrase above into concrete actions
     console.log(`Worker ${Worker} on ${env} env: OK`)
-});
+})
 
 Then('I should see the User Management header', async function () {
     // Write code here that turns the phrase above into concrete actions
     console.log(`Worker ${Worker} on ${env} env: OK`)
-});
+})
 
 Then('I should see the PIM header', async function () {
     // Write code here that turns the phrase above into concrete actions
     console.log(`Worker ${Worker} on ${env} env: OK`)
-});
+})
 
 Then('I should see the login page', async function () {
     // Write code here that turns the phrase above into concrete actions
     console.log(`Worker ${Worker} on ${env} env: OK`)
-});
+})
 
 // Given, When, Then('Log in as a {string}', async function (Person) {
 //    SFPage = new LoginAccount(this.page)
