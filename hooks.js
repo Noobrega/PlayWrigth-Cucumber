@@ -36,8 +36,7 @@ BeforeAll(function () {
 Before(async function () {
     this.browser = await chromium.launch({
         //slowMo: 1000,
-        headless: false
-
+        headless: true,
     })
     this.context = await this.browser.newContext({
         viewport: { width: Width, height: Height },
