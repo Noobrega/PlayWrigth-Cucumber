@@ -27,6 +27,16 @@ Given('I am on the OrangeHRM login page', async function () {
     // console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
     // console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------')
     SFPage = new LoginPage(this.page)
+    //     let RandomNames = await SFPage.getNameRun()
+    //     NameRun = `Automation ${RandomNames} Run`
+    //     LNameRun = `${RandomNames} Last Name`
+    //     EmailRun = await SFPage.getEmail(RandomNames)
+    //     ULID = await SFPage.getULID()
+    //     CID = await SFPage.getCompanyID()
+    //     this.DataName = NameRun
+    //     this.DataEmail = EmailRun
+    //     this.CanodicalULID = ULID
+    //     this.CompID = CID
     await SFPage.visit()
     console.log(`Worker ${Worker} on ${env} env: Navigated to OrangeHRM login page`)
 })
