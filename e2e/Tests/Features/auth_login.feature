@@ -24,3 +24,4 @@ Feature: Autenticação no OrangeHRM
       | Unknown  | admin123  |
       | 1        | admin123  |
       | Admin    |        1  |
+
