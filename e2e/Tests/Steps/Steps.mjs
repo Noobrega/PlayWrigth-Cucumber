@@ -61,8 +61,8 @@ When('I click {string} on Login page', async function (elementText) {
 })
 
 When('I log in with username {string} and password {string}', async function (username, password) {
-    // SFPage = new LoginPage(this.page)
-    // await SFPage.login(username, password)
+    SFPage = new LoginPage(this.page)
+    await SFPage.login(username, password)
     console.log(`Worker ${Worker} on ${env} env: Logged in with username: ${username}`)
 })
 

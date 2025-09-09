@@ -24,7 +24,7 @@ export class LoginPage {
     }
 
 
-    async login(email, password) {
+    async login(email = process.env.email, password = process.env.password) {
         await this.Elements.fill(this.page, this.locators["Username Field"], email)
         await this.Elements.fill(this.page, this.locators["Password Field"], password)
         await this.Elements.click(this.page, this.locators["Login Button"])

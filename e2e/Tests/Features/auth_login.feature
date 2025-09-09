@@ -16,7 +16,7 @@ Feature: Autenticação no OrangeHRM
   @negative
   Scenario Outline: Login invalido
     When I log in with username "<username>" and password "<password>"
-    Then I should see the login error message "Invalid credentials"
+    Then I should see the login error message "Invalid Credentials"
     And I should remain on the login page
     Examples:
       | username | password  |
