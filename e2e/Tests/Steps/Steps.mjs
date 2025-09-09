@@ -2,6 +2,7 @@ import { Given, When, Then } from "@cucumber/cucumber"
 import { Comands } from "../../Common/Comands.js"
 import { LoginPage } from "../../Pages/LoginPage.js"
 import { DashboardPage } from "../../Pages/DashboardPage.js"
+import { expect } from "@playwright/test"
 import * as fs from 'fs'
 import assert from "assert"
 import { log } from "console"
@@ -20,22 +21,22 @@ let env = `.env.${process.env.ENV}`
 
 // Step para login válido
 Given('I am on the OrangeHRM login page', async function () {
-    console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------')
-    console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
-    console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
-    console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
-    console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------')
+    // console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------')
+    // console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
+    // console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
+    // console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
+    // console.log('---------------------------------- I am on the OrangeHRM login page ----------------------------------')
     SFPage = new LoginPage(this.page)
     await SFPage.visit()
     console.log(`Worker ${Worker} on ${env} env: Navigated to OrangeHRM login page`)
 })
 
 Given('I am logged in as {string} with password {string}', async function (username, password) {
-    console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------')
-    console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
-    console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
-    console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
-    console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------')
+    // console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------')
+    // console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
+    // console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
+    // console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
+    // console.log('---------------------------------- I am logged in as {string} with password {string} ----------------------------------')
     SFPage = new LoginPage(this.page)
     await SFPage.login(username, password)
     console.log(`Worker ${Worker} on ${env} env: Logged in with username: ${username}`)
@@ -156,28 +157,26 @@ When('I save personal details', async function () {
 
 Then('I should see the dashboard', async function () {
     SFPage = new DashboardPage(this.page)
-    const isVisible = await SFPage.isDashboardVisible()
-    await expect(isVisible).toBeVisible()
+    await SFPage.isDashboardVisible()
     console.log(`Worker ${Worker} on ${env} env: Dashboard is visible`)
 })
 
 Then('I should see my profile menu', async function () {
     SFPage = new DashboardPage(this.page)
-    const isVisible = await SFPage.isProfileMenuVisible()
-    await expect(isVisible).toBeVisible()
+    await SFPage.isProfileMenuVisible()
     console.log(`Worker ${Worker} on ${env} env: Profile menu is visible`)
 })
 
 // Step para login inválido
 Then('I should see the login error message {string}', async function (errorMessage) {
     SFPage = new LoginPage(this.page)
-    const error = await SFPage.getLoginErrorMessage()
-    await expect(error).toContainText(errorMessage)
+    await SFPage.getLoginErrorMessage(errorMessage)
     console.log(`Worker ${Worker} on ${env} env: Login error message displayed: ${errorMessage}`)
 })
 
 Then('I should remain on the login page', async function () {
     const currentUrl = await this.page.url()
+    console.log(currentUrl)
     expect(currentUrl).toContain('/auth/login')
     console.log(`Worker ${Worker} on ${env} env: Remained on the login page`)
 })
