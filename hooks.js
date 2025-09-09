@@ -1,6 +1,6 @@
 import { Before, After, AfterAll, setDefaultTimeout, BeforeAll } from "@cucumber/cucumber"
 import { chromium } from 'playwright'
-import { paths } from "./e2e/Common/paths.js"
+import { paths } from "./e2e/Common/paths"
 import * as fs from 'fs'
 import path from "path"
 
@@ -14,6 +14,12 @@ const Height = 720
 setDefaultTimeout(180_000)
 
 BeforeAll(function () {
+    // console.log('---------------------------------- HOOKS ----------------------------------')
+    // console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
+    // console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
+    // console.log('env:', process.env.ENV || 'not defined')
+    // console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
+    // console.log('---------------------------------- HOOKS ----------------------------------')
     if (process.env.CUCUMBER_WORKER_ID == 0) {
         CleanFolder(paths.LLastRunDir)
         MoveFiles(paths.LastRunDir, paths.LLastRunDir)
@@ -24,12 +30,7 @@ BeforeAll(function () {
         CleanFolder(paths.screenshotsDir)
         CleanFolder(paths.dataVideosDir)
     }
-    // console.log('---------------------------------- HOOKS ----------------------------------')
-    // console.log('ls e2e/Tests/Features:', fs.readdirSync('e2e/Tests/Features').join('\n'))
-    // console.log('steps exists?', fs.existsSync('e2e/Tests/Steps/Steps.mjs'))
-    // console.log('env:', process.env.ENV || 'not defined')
-    // console.log(`Running with CUCUMBER_WORKER_ID=${process.env.CUCUMBER_WORKER_ID || 'not defined'}`)
-    // console.log('---------------------------------- HOOKS ----------------------------------')
+    
 })
 
 Before(async function () {
