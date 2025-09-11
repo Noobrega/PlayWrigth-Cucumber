@@ -1,9 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-import dotenv from "dotenv";
-import path from "path";
 export default defineConfig({
-  testDir: './e2e/tests',
+  testDir: './e2e/Tests',
   timeout: 90 * 1000,
   expect: {
     timeout: 10 * 1000,
